@@ -1,0 +1,4 @@
+gcp:
+  project: 'your-project-id'
+  instance: 'test-instance'
+  database: 'example-db'
