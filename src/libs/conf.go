@@ -9,11 +9,15 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Conf - config of app
 var Conf *models.Configuration
 
 func init() {
 	var err error
-	Conf, err = loadConfig("./../../config")
+
+	// Loads relative to main.go
+	Conf, err = loadConfig("./config")
+
 	if err != nil {
 		log.Println("Failed to load conf")
 		log.Fatalln(err)
