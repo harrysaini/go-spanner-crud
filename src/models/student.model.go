@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"go-spanner-crud/src/models/requests"
 
 	"github.com/google/uuid"
@@ -8,21 +9,19 @@ import (
 
 // Student - Represent student db object
 type Student struct {
-	UUID       string
-	RollNumber int
-	FirstName  string
-	LastName   string
-	BirthDate  string
-	Branch     string
+	UUID       string `json:"uuid"`
+	RollNumber int64  `json:"rollNumber"`
+	FirstName  string `json:"firstName"`
+	LastName   string `json:"lastName"`
+	BirthDate  string `json:"birthDate"`
+	Branch     string `json:"branch"`
 }
 
 // NewStudent - creates new student obj
-func NewStudent(studentReq requests.StudentCreateRequest) (Student, error) {
+func NewStudent(studentReq requests.StudentCreateRequest) Student {
 
-	uuid, err := uuid.NewRandom()
-	if err != nil {
-		return Student{}, err
-	}
+	id := fmt.Sprintf("%d-%s", studentReq.RollNumber, studentReq.Branch)
+	uuid := uuid.NewSHA1(uuid.NameSpaceURL, []byte(id))
 
 	return Student{
 		UUID:       uuid.String(),
@@ -31,5 +30,5 @@ func NewStudent(studentReq requests.StudentCreateRequest) (Student, error) {
 		LastName:   studentReq.LastName,
 		BirthDate:  studentReq.BirthDate,
 		Branch:     studentReq.Branch,
-	}, nil
+	}
 }

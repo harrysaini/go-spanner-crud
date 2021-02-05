@@ -2,3 +2,8 @@ gcp:
   project: 'your-project-id'
   instance: 'test-instance'
   database: 'example-db'
+
+redis:
+  host: 'localhost'
+  port: 6379
+  ttl: 3600

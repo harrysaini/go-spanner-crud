@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"go-spanner-crud/src/cache"
 	"go-spanner-crud/src/controllers"
 	"go-spanner-crud/src/libs"
 	spannerrepo "go-spanner-crud/src/repository/spannerRepo"
@@ -13,29 +14,30 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
-func setUpStudentsRoutes(dbClient *spanner.Client) *httprouter.Router {
+func setUpStudentsRoutes(dbClient *spanner.Client, router *httprouter.Router, cacheClient *libs.RedisCache) {
 	studentsRepo := spannerrepo.NewStudentSpannerRepository(dbClient)
-	studentService := services.NewStudentService(studentsRepo)
+	studentCache := cache.NewStudentCache(cacheClient)
+	studentService := services.NewStudentService(studentsRepo, studentCache)
 	studentController := controllers.NewStudentsController(studentService)
-	studentRouter := httprouter.New()
 
-	studentRouter.POST("/", studentController.HandleAddNewStudent)
-
-	return studentRouter
+	router.GET("/api/student/", studentController.HandleGetAllStudents)
+	router.POST("/api/student/", studentController.HandleAddNewStudent)
+	router.GET("/api/student/:uuid/", studentController.HandleGetStudent)
+	router.PUT("/api/student/:uuid/", studentController.HandleUpdateStudent)
+	router.DELETE("/api/student/:uuid/", studentController.HandleDeleteStudent)
 
 }
 
 func main() {
 
 	var config = libs.Conf
-	fmt.Println(config)
 	dbClient := libs.GetSpannerClientInstance()
-
-	studentRouter := setUpStudentsRoutes(dbClient)
+	cache := libs.NewRedisCacheClient()
 
 	router := httprouter.New()
 	router.GET("/", controllers.Index)
-	http.Handle("/api/student", studentRouter)
+
+	setUpStudentsRoutes(dbClient, router, cache)
 
 	address := fmt.Sprintf(":%d", config.Server.Port)
 	log.Println("Will listen on -> ", address)
