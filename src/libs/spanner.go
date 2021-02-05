@@ -14,7 +14,9 @@ var client *spanner.Client = nil
 func getSpannerClient(conf *models.Configuration) *spanner.Client {
 	ctx := context.Background()
 	databaseURL := fmt.Sprintf("projects/%s/instances/%s/databases/%s", conf.Gcp.Project, conf.Gcp.Instance, conf.Gcp.Database)
+	log.Println(databaseURL)
 	clint, err := spanner.NewClient(ctx, databaseURL)
+	log.Println("Spanner", err)
 	if err != nil {
 		log.Fatalln(err)
 	}
