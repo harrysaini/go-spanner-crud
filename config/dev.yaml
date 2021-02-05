@@ -1,7 +1,7 @@
 gcp:
-  project: 'your-project-id'
-  instance: 'test-instance'
-  database: 'example-db'
+  project: 'sharechat-development'
+  instance: 'ritu-test-instance'
+  database: 'ritu-test-db'
 
 redis:
   host: 'localhost'
