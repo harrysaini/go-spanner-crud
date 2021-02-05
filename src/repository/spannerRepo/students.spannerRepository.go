@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"go-spanner-crud/src/models"
-	"log"
 
 	"cloud.google.com/go/spanner"
 	"google.golang.org/api/iterator"
@@ -35,8 +34,6 @@ func (repo *StudentSpannerRepository) AddNewStudent(ctx context.Context, student
 		),
 	}
 	_, err := repo.client.Apply(ctx, m)
-
-	log.Println(err)
 
 	if spanner.ErrCode(err) == codes.AlreadyExists {
 		return errors.New("Duplicate user")
@@ -91,17 +88,13 @@ func (repo *StudentSpannerRepository) GetAllStudents(ctx context.Context, limit 
 			"offset": offset,
 		},
 	}
-	log.Println("Query")
 	iter := repo.client.Single().Query(ctx, stmt)
-
-	log.Println(iter)
 	defer iter.Stop()
 
 	students := []models.Student{}
 
 	for {
 		row, err := iter.Next()
-		log.Println(err)
 		if err == iterator.Done {
 			return students, nil
 		}
@@ -113,7 +106,6 @@ func (repo *StudentSpannerRepository) GetAllStudents(ctx context.Context, limit 
 		var birthDate spanner.NullDate
 
 		if err := row.Columns(&student.UUID, &student.RollNumber, &student.FirstName, &student.LastName, &birthDate, &student.Branch); err != nil {
-			log.Println(err)
 			return students, err
 		}
 

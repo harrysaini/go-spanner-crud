@@ -1,20 +1,4 @@
-// // Copyright 2020 Google LLC
-// //
-// // Licensed under the Apache License, Version 2.0 (the "License");
-// // you may not use this file except in compliance with the License.
-// // You may obtain a copy of the License at
-// //
-// //     https://www.apache.org/licenses/LICENSE-2.0
-// //
-// // Unless required by applicable law or agreed to in writing, software
-// // distributed under the License is distributed on an "AS IS" BASIS,
-// // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// // See the License for the specific language governing permissions and
-// // limitations under the License.
-
-package main
-
-// // [START spanner_read_data]
+package test
 
 import (
 	"context"
@@ -23,7 +7,10 @@ import (
 
 	"cloud.google.com/go/spanner"
 	"google.golang.org/api/iterator"
+	"google.golang.org/api/option"
 )
+
+// [START spanner_read_data]
 
 func read() error {
 	ctx := context.Background()
@@ -31,7 +18,7 @@ func read() error {
 	db := "projects/sharechat-development/instances/ritu-test-instance/databases/ritu-test-db"
 
 	fmt.Println(db)
-	client, err := spanner.NewClient(ctx, db)
+	client, err := spanner.NewClient(ctx, db, option.WithCredentialsFile("/Users/harishkumar/gcp_auth.json"))
 	if err != nil {
 		fmt.Println("a", err)
 		return err
